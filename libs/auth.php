@@ -115,8 +115,8 @@ function cleanupSession(){
 function login($n, $p){
     global $user_table;
 
-    $inp_name = addslashes(filter_var($n, FILTER_SANITIZE_EMAIL));
-    $inp_pass = addslashes(filter_var($p, FILTER_SANITIZE_EMAIL));
+    $inp_name = addslashes(filter_var($n, FILTER_SANITIZE_STRING));
+    $inp_pass = addslashes(filter_var($p, FILTER_SANITIZE_STRING));
     $inp_pass_md5 = md5($inp_pass);
 // we have pair' let's check our db
 
