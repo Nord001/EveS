@@ -28,6 +28,7 @@ if (get_magic_quotes_gpc())
   $fittext = trim(stripslashes($_POST['fittext']));
 else
   $fittext = trim($_POST['fittext']);
+$fittext = strip_tags($fittext);
 
 $s = new EFTSetup($DB, $ale);
 $s->parse($fittext);
