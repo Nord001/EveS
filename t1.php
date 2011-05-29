@@ -71,7 +71,18 @@ foreach ($itemlist as $t){
 }
 $inq .="-1)";
 
-$itemflist = array_merge($itemlist, array("34", "35", "36", "37", "38", "39", "40"));
+$SourceArray = array("34", "35", "36", "37", "38", "39", "40");  // Перечень материалов, которые используются далее
+$SourceName = array(
+  34 => "Tritanium",
+  35 => "Pyerite",
+  36 => "Mexallon",
+  37 => "Isogen",
+  38 => "Nocxium",
+  39 => "Zydrine",
+  40 => "Megacyte",
+);
+
+$itemflist = array_merge($itemlist, $SourceArray);
 
 $params = array('typeid'=>$itemflist, 'regionlimit' => "10000002");
 //var_dump($params);
@@ -84,67 +95,46 @@ foreach($xml->marketstat[0]->{type} as $itm){
     $iprices += array( $itm_id => $itm_minprice);
 }
 
-$mscript = "
-var mparr = new Array;
-mparr[0] = ".$iprices['34'].";
-mparr[1] = ".$iprices['35'].";
-mparr[2] = ".$iprices['36'].";
-mparr[3] = ".$iprices['37'].";
-mparr[4] = ".$iprices['38'].";
-mparr[5] = ".$iprices['39'].";
-mparr[6] = ".$iprices['40'].";
-";
+$mscript = "var mparr = new Array;";
+foreach($SourceArray as $key => $value)
+  $mscript .= "mparr[$key] = " . $iprices[$value] . ";";
 
 // Load materials for requested t1 
-$sql = "SELECT typeID, 
-SUM( IF( materialTypeID = '34', quantity, 0 ) ) AS `Tr`, 
-SUM( IF( materialTypeID = '35', quantity, 0 ) ) AS `Pr`, 
-SUM( IF( materialTypeID = '36', quantity, 0 ) ) AS `Mx`,
-SUM( IF( materialTypeID = '37', quantity, 0 ) ) AS `Is`,
-SUM( IF( materialTypeID = '38', quantity, 0 ) ) AS `Nx`,
-SUM( IF( materialTypeID = '39', quantity, 0 ) ) AS `Zd`,
-SUM( IF( materialTypeID = '40', quantity, 0 ) ) AS `Mc`
+$sql = "SELECT typeID, ";
+foreach($SourceArray as $key => $value)
+{
+  $sql .= "SUM( IF( materialTypeID = '$value', quantity, 0 ) ) AS `" . $SourceName[$value] . "`";
+  if($key + 1 != sizeof($SourceArray))  // Отдельный костыль ставим на последнюю запятую
+    $sql .= ', ';
+}
+$sql .= "
 FROM invTypeMaterials
 WHERE typeID $inq
 GROUP BY typeID";
 $mraw = $DB->select_and_fetch($sql, "typeID");
 
-
 $table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5'>
 <BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";
 $table .= "<table id='t1tbl'\n";
-$table .= "<tr> <th rowspan='2'>Item name</th>
-	    <th colspan='2'>Tritanium (".$iprices['34'].")</th>
-	    <th colspan='2'>Pyerite (".$iprices['35'].")</th>
-	    <th colspan='2'>Mexallon (".$iprices['36'].")</th>
-	    <th colspan='2'>Isogen (".$iprices['37'].")</th>
-	    <th colspan='2'>Nocxium (".$iprices['38'].")</th>
-	    <th colspan='2'>Zydrine (".$iprices['39'].")</th>
-	    <th colspan='2'>Megacyte (".$iprices['40'].")</th>
+$table .= "<tr> <th rowspan='2'>Item name</th>";
+foreach($SourceArray as $value)
+  $table .= "<th colspan='2'>" . $SourceName[$value] . " (".$iprices[$value].")</th>";
+$table .= "
 	    <th rowspan='2'>P.Cost</th>
 	    <th rowspan='2'>Mkt. min</th>
 	    <th rowspan='2'>Profit</th>
 	    </tr>";
-$table .= "<tr>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"<th>Perf.Q</th><th>Real.Q</th>".
-"</tr>";
+$table .= "<tr>";
+foreach($SourceArray as $value)
+  $table .= "<th>Perf.Q</th><th>Real.Q</th>";
+$table .= "</tr>";
 $row_mark = "row1";
 foreach ($t1all  as $t1id => $v){
 $item_raw = $mraw[$t1id];
-$table .= "<tr class='$row_mark'><td style='white-space: nowrap'>".$v['typeName']."</td>".
-    "<td align='right' id='q.0'>".numfmt($item_raw['Tr'])."&nbsp;</td> <td align='right' id='r.0'>0</td>".
-    "<td align='right' id='q.1'>".numfmt($item_raw['Pr'])."&nbsp;</td> <td align='right' id='r.1'>0</td>".
-    "<td align='right' id='q.2'>".numfmt($item_raw['Mx'])."&nbsp;</td> <td align='right' id='r.2'>0</td>".
-    "<td align='right' id='q.3'>".numfmt($item_raw['Is'])."&nbsp;</td> <td align='right' id='r.3'>0</td>".
-    "<td align='right' id='q.4'>".numfmt($item_raw['Nx'])."&nbsp;</td> <td align='right' id='r.4'>0</td>".
-    "<td align='right' id='q.5'>".numfmt($item_raw['Zd'])."&nbsp;</td> <td align='right' id='r.5'>0</td>".
-    "<td align='right' id='q.6'>".numfmt($item_raw['Mc'])."&nbsp;</td> <td align='right' id='r.6'>0</td>".
+$table .= "<tr class='$row_mark'><td style='white-space: nowrap'>".$v['typeName']."</td>";
+foreach($SourceArray as $key => $value)
+  $table .= "<td align='right' id='q.$key'>".numfmt($item_raw[$SourceName[$value]])."&nbsp;</td> <td align='right' id='r.$key'>0</td>";
+$table .= 
     "<td align='right' id='t.".$t1all[$t1id]['wasteFactor']."'>0</td>".
     "<td align='right' id='m'>".numfmt($iprices[$t1id])."</td>".
     "<td align='right' id='p'>0</td>".
