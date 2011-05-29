@@ -1,4 +1,12 @@
 <html>
+<head>
+<style type="text/css"><!--
+body {
+    background-color: #FFFFFF;
+}
+//--></style>
+
+</head>
 <body>
 {$cdate}
 {include file='header.tpl'}

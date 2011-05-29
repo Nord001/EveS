@@ -144,6 +144,9 @@ th{
     border-collapse:collapse;
     white-space:nowrap;
 }
+body {
+    background-color: #FFFFFF;
+}
 //--></style>
 
 </head>

@@ -123,6 +123,12 @@ function pageSummary(){
 }
 
 </script>
+<style type="text/css"><!--
+body {
+    background-color: #FFFFFF;
+}
+//--></style>
+
 </head><body>
 {include file='header.tpl'}
 {$page}
