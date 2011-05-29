@@ -113,27 +113,34 @@ WHERE typeID $inq
 GROUP BY typeID";
 $mraw = $DB->select_and_fetch($sql, "typeID");
 
-$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5'>
-<BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";
+// Fill Table UnderHeader :)
+$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5' title='Уровень ME у BPO/BPC'>
+<BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";  
+
+// Fill table header
 $table .= "<table id='t1tbl'\n";
 $table .= "<tr> <th rowspan='2'>Item name</th>";
 foreach($SourceArray as $value)
   $table .= "<th colspan='2'>" . $SourceName[$value] . " (".$iprices[$value].")</th>";
 $table .= "
-	    <th rowspan='2'>P.Cost</th>
-	    <th rowspan='2'>Mkt. min</th>
-	    <th rowspan='2'>Profit</th>
+	    <th rowspan='2' title='Стоимость производства'>P.Cost</th>
+	    <th rowspan='2' title='Цена в Jita'>Mkt. min</th>
+	    <th rowspan='2' title='Итоговая прибыль'>Profit</th>
 	    </tr>";
 $table .= "<tr>";
 foreach($SourceArray as $value)
-  $table .= "<th>Perf.Q</th><th>Real.Q</th>";
+  $table .= "<th title='Необходимое количество " . $SourceName[$value] . " при идеальном ME'>Perf.Q</th><th title='Необходимое количество " . $SourceName[$value] . " при текущем ME'>Real.Q</th>";
 $table .= "</tr>";
+
 $row_mark = "row1";
 foreach ($t1all  as $t1id => $v){
 $item_raw = $mraw[$t1id];
-$table .= "<tr class='$row_mark'><td style='white-space: nowrap'>".$v['typeName']."</td>";
+// End table header
+
+$table .= "<tr class='$row_mark'><td style='white-space: nowrap'>".$v['typeName']."</td>";  // Item name
 foreach($SourceArray as $key => $value)
-  $table .= "<td align='right' id='q.$key'>".numfmt($item_raw[$SourceName[$value]])."&nbsp;</td> <td align='right' id='r.$key'>0</td>";
+  $table .= "<td align='right' id='q.$key'>".numfmt($item_raw[$SourceName[$value]])."&nbsp;</td> <td align='right' id='r.$key'>0</td>";  // Perfect quantity and current quantity
+  
 $table .= 
     "<td align='right' id='t.".$t1all[$t1id]['wasteFactor']."'>0</td>".
     "<td align='right' id='m'>".numfmt($iprices[$t1id])."</td>".
