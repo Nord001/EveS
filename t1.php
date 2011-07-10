@@ -71,7 +71,7 @@ foreach ($itemlist as $t){
 }
 $inq .="-1)";
 
-$SourceArray = array("34", "35", "36", "37", "38", "39", "40");  // Перечень материалов, которые используются далее
+$SourceArray = array("34", "35", "36", "37", "38", "39", "40");  // Materual list for use below
 $SourceName = array(
   34 => "Tritanium",
   35 => "Pyerite",
@@ -104,7 +104,7 @@ $sql = "SELECT typeID, ";
 foreach($SourceArray as $key => $value)
 {
   $sql .= "SUM( IF( materialTypeID = '$value', quantity, 0 ) ) AS `" . $SourceName[$value] . "`";
-  if($key + 1 != sizeof($SourceArray))  // Отдельный костыль ставим на последнюю запятую
+  if($key + 1 != sizeof($SourceArray))  // Spike for comma in last value
     $sql .= ', ';
 }
 $sql .= "
@@ -114,7 +114,7 @@ GROUP BY typeID";
 $mraw = $DB->select_and_fetch($sql, "typeID");
 
 // Fill Table UnderHeader :)
-$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5' title='Уровень ME у BPO/BPC'>
+$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5' title='BPO`s ME level/BPC'>
 <BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";  
 
 // Fill table header
@@ -123,13 +123,13 @@ $table .= "<tr> <th rowspan='2'>Item name</th>";
 foreach($SourceArray as $value)
   $table .= "<th colspan='2'>" . $SourceName[$value] . " (".$iprices[$value].")</th>";
 $table .= "
-	    <th rowspan='2' title='Стоимость производства'>P.Cost</th>
-	    <th rowspan='2' title='Цена в Jita'>Mkt. min</th>
-	    <th rowspan='2' title='Итоговая прибыль'>Profit</th>
+	    <th rowspan='2' title='Production cost'>P.Cost</th>
+	    <th rowspan='2' title='Jita`s cost'>Mkt. min</th>
+	    <th rowspan='2' title='Total profit'>Profit</th>
 	    </tr>";
 $table .= "<tr>";
 foreach($SourceArray as $value)
-  $table .= "<th title='Необходимое количество " . $SourceName[$value] . " при идеальном ME'>Perf.Q</th><th title='Необходимое количество " . $SourceName[$value] . " при текущем ME'>Real.Q</th>";
+  $table .= "<th title='Needed quantity " . $SourceName[$value] . " with ideal ME'>Perf.Q</th><th title='Needed quantity " . $SourceName[$value] . " with current ME'>Real.Q</th>";
 $table .= "</tr>";
 
 $row_mark = "row1";
