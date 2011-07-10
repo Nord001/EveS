@@ -123,11 +123,8 @@ function pageSummary(){
 }
 
 </script>
-<style type="text/css"><!--
-body {
-    background-color: #FFFFFF;
-}
-//--></style>
+
+<link rel="stylesheet" type="text/css" href="common.css" />
 
 </head><body>
 {include file='header.tpl'}
