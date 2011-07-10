@@ -1,0 +1,14 @@
+10-Jul-2011
++Added custom ME for t1/t2 manufacturing
+
+Custom ME (and other options) add new table in database:
+CREATE TABLE IF NOT EXISTS `userOpts` (
+  `uid` bigint(10) NOT NULL,
+  `miscOpt` varchar(255) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
+  `minOpt` char(10) NOT NULL default 'jita',
+  `skillOpt` char(10) NOT NULL default 'perf',
+  `minDefined` varchar(255) default NULL,
+  `skillDefined` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
