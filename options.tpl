@@ -11,6 +11,13 @@
 
 
 <form action='options.php?a=save' method='post' id='optform'>
+<h1>Default ME for BPC</h1>
+<table border='0'>
+    <tr><td>Meta 1 BPC/BPO </td><td><input type='text' name='bpc_m1' value='{$opts.bpoT1me}' size='5'></td> </tr>
+    <tr><td>Meta 2 BPC/BPO </td><td><input type='text' name='bpc_m2' value='{$opts.bpoT2me}' size='5'></td></tr>
+    <tr><td>Meta 2 Subcomponents </td><td><input type='text' name='bpc_m22' value='{$opts.bpoT22me}' size='5'></td></tr>
+</table>
+
 <h1>Mineral price setup</h1>
 <OL>
 <LI><input type="radio" name="mset" value="jita" {if $opts.minOpt eq "jita"}checked{/if}>Use automatic Jita prices</LI>

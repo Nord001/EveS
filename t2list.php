@@ -25,7 +25,7 @@ FROM invGroups As `ig`
 INNER JOIN invTypes AS `it` ON ig.groupID=it.groupID
 INNER JOIN invBlueprintTypes AS `ib` ON it.typeID=ib.productTypeID
 WHERE (
-ig.categoryID IN (6,7) AND
+ig.categoryID IN (6,7, 8, 18) AND
 it.published='1' AND
 ib.techLevel='2' AND
 (ig.groupID<'773' OR ig.groupID>'786')

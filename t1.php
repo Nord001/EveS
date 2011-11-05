@@ -25,6 +25,12 @@ if (!$user->checkSession() or !in_array($user->group, $acl_allowed)){
 
 $DB = new mydb;
 $DB->connect();
+
+require_once './libs/opts.php';
+$opts = load_options($DB, $user->getUID());
+$def_t1_me = $opts['bpoT1me'];
+
+
 $ingid = $_REQUEST["grselect"];
 
 if (!is_Numeric($ingid) & !empty($ingid)){ die("Missing param<br>\n"); }
@@ -33,10 +39,11 @@ FROM invGroups As `ig`
 INNER JOIN invTypes AS `it` ON ig.groupID=it.groupID
 INNER JOIN invBlueprintTypes AS `ib` ON it.typeID=ib.productTypeID
 WHERE (
-ig.categoryID IN (6,7) AND 
+ig.categoryID IN (6, 7, 8, 18) AND 
 it.published='1' AND 
 ib.techLevel='1' AND
-(ig.groupID<'773' OR ig.groupID>'786')
+(ig.groupID<'773' OR ig.groupID>'786') AND 
+ig.groupID NOT IN (547, 30, 485, 659)
 ) group by groupID Order By groupName";
 $groups = $DB->select_and_fetch($sql, "groupID");
 
@@ -114,7 +121,7 @@ GROUP BY typeID";
 $mraw = $DB->select_and_fetch($sql, "typeID");
 
 // Fill Table UnderHeader :)
-$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='0' size='5' title='BPO`s ME level/BPC'>
+$table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='$def_t1_me' size='5' title='BPO`s ME level/BPC'>
 <BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";  
 
 // Fill table header

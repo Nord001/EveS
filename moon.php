@@ -196,10 +196,10 @@ $table .=	"<tr><th>Raw material</th><th>Sell</th><th>QpH</th><th>Mkt.$</th>".
     }	// end of intermid loop
 
 	    
-	    $row_string = preg_replace("/\%complex_cost_intermid/", numfmt($complex_cost_intermid), $row_string);
-	    $row_string = preg_replace("/\%complex_profit_intermid/", numfmt($complex_value - $complex_cost_intermid), $row_string);
+	    $row_string = preg_replace("/\%complex_cost_intermid/", numfmt($complex_cost_intermid/2), $row_string);
+	    $row_string = preg_replace("/\%complex_profit_intermid/", numfmt($complex_value - ($complex_cost_intermid/2)), $row_string);
             $row_string = preg_replace("/\%complex_cost_raw/", numfmt($complex_cost_raw), $row_string);
-            $row_string = preg_replace("/\%complex_profit_raw/", numfmt($complex_value - $complex_cost_raw + $complex_cost_intermid/2), $row_string);
+            $row_string = preg_replace("/\%complex_profit_raw/", numfmt($complex_value - $complex_cost_raw + ($complex_cost_intermid/2)), $row_string);
 
 
     $row_string = preg_replace("/\%rowspan/", $raw_rows, $row_string);

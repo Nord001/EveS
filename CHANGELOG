@@ -12,3 +12,9 @@ CREATE TABLE IF NOT EXISTS `userOpts` (
   `skillDefined` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+05-Nov-2011
+*Fixed T1 groups in item list. Added ammo/charges, drones.
+ Removed capital ships (has no sense in such table).
+*Fixed T2 groups same as T1.
+-T2 ammo/charges calculated incorrectly.

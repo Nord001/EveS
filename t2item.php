@@ -1,7 +1,7 @@
 <?php
 
 $def_t2_me = -4; 
-$def_me = 0;
+$def_t22_me = 0;
 
 // show matherial for selected item
 function StepID(){
@@ -207,6 +207,11 @@ if (!$user->checkSession() or !in_array($user->group, $acl_allowed)){
 require_once './libs/ale/factory.php';
 $ale = AleFactory::getEVECentral();
 
+require_once './libs/opts.php';
+$opts = load_options($DB, $user->getUID());
+$def_t2_me = $opts['bpoT2me'];
+$def_t22_me = $opts['bpoT22me'];
+
 
 $iid = $_REQUEST["iid"];
 if (!is_Numeric($iid)) die("Missing param<br>\n");
@@ -251,7 +256,7 @@ foreach($build_items as $bit => $bit_num){
     $incount = $step2['incount'];
     $tbl_name = "mt_".$bit;
     $tbl_hdr = "<b>Materials for $iname x $incount</b><br>\n
-    $name BPO ME:&nbsp;<input id='me$bit' type='text' name='RootME' value='$def_me' size='5'>
+    $name BPO ME:&nbsp;<input id='me$bit' type='text' name='RootME' value='$def_t22_me' size='5'>
     <BUTTON NAME='adjr_' onClick=\"AdjustME('$tbl_name', 'me$bit')\">Adjust</BUTTON>" ;
     $adjuster .= "AdjustME('mt_$bit', 'me$bit');";    
     
