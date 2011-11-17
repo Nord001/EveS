@@ -27,6 +27,14 @@ function addSeparator(SS) {
     }
     return sign+S.charAt(0)+X;
 }
+// parse 1,34 to 1.34 float
+function parseCFloat(ins){
+    if (ins){
+	var s = String(ins);
+	return parseFloat(s.replace(",", "."));
+    }
+    return null;
+}
 
 function CalculateTotal(tblid, me){
 var baseWaste = {$root_waste}; 	// todo: take as parameter
@@ -51,15 +59,16 @@ for (var i=0; i<row_num; i++){
 	case 'n': in_cell = tbl.rows[i].cells[j];break;
 	}
     } // by cell
-    var n = in_cell ? parseFloat(in_cell.innerHTML): 1;
-    var r = q_cell ? parseFloat(q_cell.innerHTML): -1;
-    var p = p_cell ? parseFloat(removeSpaces(p_cell.innerHTML)): -1;
-    var q = q_cell ? parseFloat(q_cell.innerHTML): -1;
+    var n = in_cell ? parseCFloat(in_cell.innerHTML): 1;
+    var r = q_cell ? parseCFloat(q_cell.innerHTML): -1;
+    var p = p_cell ? parseCFloat(removeSpaces(p_cell.innerHTML)): -1;
+    var p2 = p_cell ? removeSpaces(p_cell.innerHTML): -1;
+    var q = q_cell ? parseCFloat(q_cell.innerHTML): -1;
     if (r_cell){ // calc real q. and sum
 	if (me >= 0){
-	    r = r + n*Math.round((q/n) * (parseFloat(baseWaste)/100)*(1/(parseFloat(me)+1)));
+	    r = r + n*Math.round((q/n) * (parseCFloat(baseWaste)/100)*(1/(parseCFloat(me)+1)));
 	}else{
-	    r = r + n*Math.round((q/n) * (parseFloat(baseWaste)/100)*(1-(parseFloat(me))));
+	    r = r + n*Math.round((q/n) * (parseCFloat(baseWaste)/100)*(1-(parseCFloat(me))));
 	}
 	r_cell.innerHTML =  r;
     }
@@ -111,7 +120,7 @@ function pageSummary(){
     var page_total = 0.0;
     for (var i=0; i<num_tables; i++){
 	var tbl_total = removeSpaces(getCell(mat_tables[i], "tt").innerHTML);
-	page_total += parseFloat(tbl_total);
+	page_total += parseCFloat(tbl_total);
     }
     var page_mkt   = removeSpaces(getCell(mat_tables[0], "mk").innerHTML);
     var ccell = getCell("pgsum", "pgt");

@@ -37,6 +37,14 @@ function addSeparator(SS) {
     return sign+S.charAt(0)+X;
 }
 
+// parse 1,34 to 1.34 float
+function parseCFloat(ins){
+    if (ins){
+    var s = String(ins);
+    return parseFloat(s.replace(",", "."));
+    }
+    return null;
+}
 
 function getIdx(s){
     var p = new Array;
@@ -75,7 +83,7 @@ for (var i=0; i<row_num; i++){
 	    break;
 	}
 	case 't':{
-	    baseWaste = parseFloat(cid.substring(2,cid.length));	    
+	    baseWaste = parseCFloat(cid.substring(2,cid.length));	    
 	    tcell = tbl.rows[i].cells[j];
 	    break;
 	}
@@ -93,11 +101,11 @@ for (var i=0; i<row_num; i++){
 
     for (var c=0; c<=6; c++){
     if (qarr[c]){
-	var q = parseFloat(removeSpaces(qarr[c].innerHTML));
+	var q = parseCFloat(removeSpaces(qarr[c].innerHTML));
         if (me >= 0){
-            var r = Math.round(q * (baseWaste/100)*(1/(parseFloat(me)+1)));
+            var r = Math.round(q * (baseWaste/100)*(1/(parseCFloat(me)+1)));
         }else{
-            var r = Math.round(q* (baseWaste/100)*(1-parseFloat(me)));
+            var r = Math.round(q* (baseWaste/100)*(1-parseCFloat(me)));
 	}
 	r += q;
         rarr[c].innerHTML =  addSeparator(r.toString());
@@ -109,7 +117,7 @@ for (var i=0; i<row_num; i++){
 	tcell.innerHTML = addSeparator(Math.round(total).toString());
     }
     if (pcell){
-	var prof =  parseFloat(removeSpaces(mcell.innerHTML))- total;
+	var prof =  parseCFloat(removeSpaces(mcell.innerHTML))- total;
 	pcell.innerHTML = addSeparator(Math.round(prof).toString());
     }	
     } // for c
