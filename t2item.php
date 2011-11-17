@@ -170,6 +170,7 @@ foreach ($mraw  as $mid => $v){
         }
 
 	$price = numfmt($mprices[$mid], 2);
+	$sum = numfmt($mprices[$mid]*$mrquantity);
 	$table.="<tr><td>$mrname</td><td id='q'>$mrquantity</td><td id='r'>-</td>$opts<td align='right' id='p'>$price</td><td align='right' id='s'>$sum</td></tr>\n";
     } // mrquantity >0
 }
