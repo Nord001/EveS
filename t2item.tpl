@@ -56,7 +56,7 @@ for (var i=0; i<row_num; i++){
 	case 's': s_cell = tbl.rows[i].cells[j];break;
 	case 'tt':tt_cell = tbl.rows[i].cells[j];break;
 	case 'sl':sl_cell = tbl.rows[i].cells[j];break;
-	case 'n': in_cell = tbl.rows[i].cells[j];break;
+	case  'n': in_cell = tbl.rows[i].cells[j];break;
 	}
     } // by cell
     var n = in_cell ? parseCFloat(in_cell.innerHTML): 1;
@@ -140,6 +140,9 @@ function pageSummary(){
 {$page}
 <p><b>Page summary:</b></br>
 <table id='pgsum'>
+{if $root_portion>1}
+<tr><td>Pack size:</td><td align='right'> {$root_portion}</td></tr>
+{/if}
 <tr><td>Total summary: </td><td id='pgt' align='right'>-</td></tr>
 <tr><td>Total market: </td><td id='pgm' align='right'>-</td></tr>
 <tr><td>Calculated profit: </td><td id='pgp' align='right'>-</td></tr>

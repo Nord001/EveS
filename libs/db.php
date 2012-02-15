@@ -7,7 +7,7 @@ function __construct(){
 // database settings 
 $this->settings = array("sql_database"   => "eve_import"    ,
             		"sql_user"       => "root"     		,
-                    	"sql_pass"       => ""         	,
+                    	"sql_pass"       => "root"      	,
                     	"sql_host"       => "localhost"	,
                     	"sql_port"       => ""         	,
                      );

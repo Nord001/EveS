@@ -39,8 +39,7 @@ $root_name  = $root_item[$iid]["typeName"];
 $root_bpid  = $root_item[$iid]["blueprintTypeID"];
 $root_waste = $root_item[$iid]["wasteFactor"];
 $root_gid   = $root_item[$iid]["groupID"];
-
-
+$root_portion = $root_item[$iid]["portionSize"];
 
 $mextra = $DB->select_and_fetch("SELECT t.typeID, t.groupID, t.typeName, r.quantity, r.damagePerJob, recycle
 FROM ramTypeRequirements AS r
@@ -103,7 +102,7 @@ foreach($mmkd as $bit){
 	// it is raw mat, apply me
 	$bit_num = adjustME($mraw[$bit]['quantity'], $root_me, $root_waste);
     }else{
-	$bit_num = $mextra[$bit]['quantity'];
+	$bit_num = $mextra[$bit]['quantity']*$mextra[$bit]['damagePerJob'];
     }
     $build_items[$bit] = $bit_num;
 }	
@@ -176,7 +175,7 @@ foreach ($mraw  as $mid => $v){
 }
 // add total row
 $table .= "<tr><td colspan='5'></td><td ><b>Total</b>:</td><td align='right' id='tt'>-</td></tr>";
-$mkt_value = numfmt($mprices[$iid]*$itemnum, 0);
+$mkt_value = numfmt($mprices[$iid]*$itemnum*$root_portion, 0);
 $table .= "<tr><td colspan='5'></td><td ><b>Market</b>:</td><td align='right' id='mk'>$mkt_value</td></tr>";
 
 $table .= "</table>";
@@ -186,6 +185,7 @@ $retval['iname']   = $root_name;
 $retval['incount'] = $itemnum; // FIX IT
 $retval['iwaste']  = $root_waste; // move to table
 $retval['build_items']  = $build_items; // prepared list for next step
+$retval['root_portion'] = $root_portion;
 return $retval;
 }
 // end of function
@@ -222,12 +222,15 @@ if (!is_Numeric($iid_me) & !empty($iid_me)) die("Missing param<br>\n");
 $step = drawTable($iid, $DB, $ale, 1);
 $iname = $step['iname'];
 $build_items = $step['build_items'];
-
+$portion = $step['root_portion'];
 $start_form ="";
 $end_form   = "";
 $adjuster="";
+
+
 if (StepID() == 1){
-    $start_form = "<b>Materials for $iname</b><br>\n
+    if ($portion > 1 ){$addtext = "x$portion";} else {$addtext = "";};
+    $start_form = "<b>Materials for $iname $addtext</b><br>\n
     $root_name BPO ME:&nbsp;<input id='t2mein' type='text' name='RootME' value='$def_t2_me' size='5'>
     <BUTTON	NAME='adjr_' onClick=\"AdjustME_t2('mt_$iid', 't2mein', 't2meout')\">Adjust</BUTTON>
     <form acrion='t2item.php'>
@@ -265,12 +268,15 @@ foreach($build_items as $bit => $bit_num){
 }
 $mt_jtables .= "0);\n"; // close Jscript array
 $mt_jnum_tables = 1+count($build_items);
-$jglobalvars=" var num_tables=$mt_jnum_tables;\n $mt_jtables";
+$jglobalvars="var portion=$portion;\nvar num_tables=$mt_jnum_tables;\n$mt_jtables ";
 
 $smarty->assign("root_name", $step['iname']);
+$smarty->assign("root_id", $iid);
+
 $smarty->assign("user", $user);
 $smarty->assign("page", $page);
 $smarty->assign("adjuster", $adjuster);
 $smarty->assign("root_waste",$step['iwaste']); //bug!
 $smarty->assign("jglobalvars",$jglobalvars); 
+$smarty->assign("root_portion", $portion);
 $smarty->display('t2item.tpl');

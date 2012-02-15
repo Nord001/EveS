@@ -34,6 +34,7 @@ $def_t1_me = $opts['bpoT1me'];
 $ingid = $_REQUEST["grselect"];
 
 if (!is_Numeric($ingid) & !empty($ingid)){ die("Missing param<br>\n"); }
+//(ig.groupID<'773' OR ig.groupID>'786') AND 
 $sql = "SELECT ig.groupID, ig.groupName, count(it.typeName), ib.techLevel
 FROM invGroups As `ig`
 INNER JOIN invTypes AS `it` ON ig.groupID=it.groupID
@@ -41,12 +42,11 @@ INNER JOIN invBlueprintTypes AS `ib` ON it.typeID=ib.productTypeID
 WHERE (
 ig.categoryID IN (6, 7, 8, 18) AND 
 it.published='1' AND 
-ib.techLevel='1' AND
-(ig.groupID<'773' OR ig.groupID>'786') AND 
-ig.groupID NOT IN (547, 30, 485, 659)
+ib.techLevel='1' AND 
+ig.groupID NOT IN (513, 547, 30, 485, 659, 324, 773,774,775, 776, 777, 778, 779, 780, 781, 782, 786)
 ) group by groupID Order By groupName";
 $groups = $DB->select_and_fetch($sql, "groupID");
-
+//print(count($groups));
 $selector = "";
 foreach ($groups as $gid => $gr){
     $groupName = $gr['groupName'];
@@ -58,15 +58,19 @@ foreach ($groups as $gid => $gr){
 }
 
 if (!empty($ingid)){
-$t1all = $DB->select_and_fetch("SELECT it.typeID, it.marketGroupID, it.typeName, it.groupID, ibt.wasteFactor
+$t1all = $DB->select_and_fetch("SELECT it.typeID, it.marketGroupID, it.typeName, it.groupID, 
+ it.portionSize  as portionSize, ibt.wasteFactor
 FROM `invBlueprintTypes` AS `ibt`
-LEFT JOIN invTypes AS it ON ibt.productTypeID = it.typeId
+LEFT  JOIN invTypes AS it ON ibt.productTypeID = it.typeId
 WHERE (
 ibt.techLevel = '1'
 AND it.published = '1'
 AND it.marketGroupID IS NOT NULL
+AND ibt.blueprintTypeID NOT IN (19813, 19809, 19811, 19815)
 AND it.groupID = '$ingid'
 ) ORDER BY it.typeName", "typeID");
+
+
 
 // Load prices for a) minerals, b) t1 from choosen group
 
@@ -77,6 +81,8 @@ foreach ($itemlist as $t){
     $inq .= "$t,";
 }
 $inq .="-1)";
+
+$portion = $t1all[$itemlist[0]]['portionSize'];
 
 $SourceArray = array("34", "35", "36", "37", "38", "39", "40");  // Materual list for use below
 $SourceName = array(
@@ -104,8 +110,8 @@ foreach($xml->marketstat[0]->{type} as $itm){
 
 $mscript = "var mparr = new Array;";
 foreach($SourceArray as $key => $value)
-  $mscript .= "mparr[$key] = " . $iprices[$value] . ";";
-
+  $mscript .= "mparr[$key] = " . $iprices[$value] . ";\n";
+$mscript .= "var portion = ".$portion.";";
 // Load materials for requested t1 
 $sql = "SELECT typeID, ";
 foreach($SourceArray as $key => $value)
@@ -120,19 +126,20 @@ WHERE typeID $inq
 GROUP BY typeID";
 $mraw = $DB->select_and_fetch($sql, "typeID");
 
+
 // Fill Table UnderHeader :)
 $table  = "Set BPO ME:&nbsp;<input id='adjr' type='text' name='RootME' value='$def_t1_me' size='5' title='BPO`s ME level/BPC'>
-<BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>";  
+<BUTTON NAME='adjr_' onClick=\"AdjustME('adjr')\">Adjust</BUTTON>&nbsp; Pack size: $portion items per run";  
 
 // Fill table header
 $table .= "<table id='t1tbl'\n";
 $table .= "<tr> <th rowspan='2'>Item name</th>";
 foreach($SourceArray as $value)
-  $table .= "<th colspan='2'>" . $SourceName[$value] . " (".$iprices[$value].")</th>";
+$table .= "<th colspan='2'>" . $SourceName[$value] . " (".$iprices[$value].")</th>";
 $table .= "
-	    <th rowspan='2' title='Production cost'>P.Cost</th>
+	    <th rowspan='2' title='Production cost'>P. Cost</th>
 	    <th rowspan='2' title='Jita`s cost'>Mkt. min</th>
-	    <th rowspan='2' title='Total profit'>Profit</th>
+	    <th rowspan='2' title='Total profit'>Profit/Pack</th>
 	    </tr>";
 $table .= "<tr>";
 foreach($SourceArray as $value)
@@ -144,13 +151,13 @@ foreach ($t1all  as $t1id => $v){
 $item_raw = $mraw[$t1id];
 // End table header
 
-$table .= "<tr class='$row_mark'><td style='white-space: nowrap'>".$v['typeName']."</td>";  // Item name
+$table .= "<tr class='$row_mark'><td style='white-space: nowrap'> ".$v['typeName']."</td>";  // Item name
 foreach($SourceArray as $key => $value)
   $table .= "<td align='right' id='q.$key'>".numfmt($item_raw[$SourceName[$value]])."&nbsp;</td> <td align='right' id='r.$key'>0</td>";  // Perfect quantity and current quantity
   
 $table .= 
     "<td align='right' id='t.".$t1all[$t1id]['wasteFactor']."'>0</td>".
-    "<td align='right' id='m'>".numfmt($iprices[$t1id])."</td>".
+    "<td align='right' id='m'>".numfmt($iprices[$t1id]*$portion)."</td>".
     "<td align='right' id='p'>0</td>".
     "</tr>\n";
     $row_mark = $row_mark == "row1"? "row2":"row1";

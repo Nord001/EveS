@@ -117,7 +117,7 @@ for (var i=0; i<row_num; i++){
 	tcell.innerHTML = addSeparator(Math.round(total).toString());
     }
     if (pcell){
-	var prof =  parseCFloat(removeSpaces(mcell.innerHTML))- total;
+	var prof =  parseCFloat(removeSpaces(mcell.innerHTML))- Math.round(total);
 	pcell.innerHTML = addSeparator(Math.round(prof).toString());
     }	
     } // for c
