@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: base.php 210 2009-07-23 18:16:20Z kovalikp $
+ * @version $Id: base.php 214 2010-02-24 00:40:47Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -110,7 +110,7 @@ class AleBase {
 	 * @param array $arguments variable retrieved by __call method
 	 * @return unknown
 	 */
-	protected function _retrieveXml(array $context, array $arguments) {
+	public function _retrieveXml(array $context, array $arguments) {
 		$path = implode('/', $context);
 		$params = isset($arguments[0]) && is_array($arguments[0]) ? $arguments[0] : array();
 		return $this->retrieveXml($path, $params);

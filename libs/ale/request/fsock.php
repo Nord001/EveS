@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: fsock.php 204 2009-04-25 22:14:22Z kovalikp $
+ * @version $Id: fsock.php 214 2010-02-24 00:40:47Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -66,7 +66,7 @@ class AleRequestFsock implements AleInterfaceRequest  {
 		$fp = fsockopen($parsed['host'], $parsed['port'], $errno, $errstr, $this->config['timeout']);
 		
 		if (!$fp) {
-			throw new AleExceptionCache($errstr, $errno);
+			throw new AleExceptionRequest($errstr, $errno);
 		}
 		
 		fputs ($fp, "POST " . $parsed['path'] . " HTTP/1.0\r\n");

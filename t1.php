@@ -43,7 +43,7 @@ WHERE (
 ig.categoryID IN (6, 7, 8, 18) AND 
 it.published='1' AND 
 ib.techLevel='1' AND 
-ig.groupID NOT IN (513, 547, 30, 485, 659, 324, 773,774,775, 776, 777, 778, 779, 780, 781, 782, 786)
+ig.groupID NOT IN (513, 547, 30, 485, 659, 324, 773,774,775, 776, 777, 778, 779, 780, 781, 782, 786, 883)
 ) group by groupID Order By groupName";
 $groups = $DB->select_and_fetch($sql, "groupID");
 //print(count($groups));
@@ -84,7 +84,7 @@ $inq .="-1)";
 
 $portion = $t1all[$itemlist[0]]['portionSize'];
 
-$SourceArray = array("34", "35", "36", "37", "38", "39", "40");  // Materual list for use below
+$SourceArray = array("34", "35", "36", "37", "38", "39", "40", );  // Materual list for use below
 $SourceName = array(
   34 => "Tritanium",
   35 => "Pyerite",
@@ -93,6 +93,7 @@ $SourceName = array(
   38 => "Nocxium",
   39 => "Zydrine",
   40 => "Megacyte",
+//  3380 => "Morphite"
 );
 
 $itemflist = array_merge($itemlist, $SourceArray);
@@ -112,6 +113,7 @@ $mscript = "var mparr = new Array;";
 foreach($SourceArray as $key => $value)
   $mscript .= "mparr[$key] = " . $iprices[$value] . ";\n";
 $mscript .= "var portion = ".$portion.";";
+
 // Load materials for requested t1 
 $sql = "SELECT typeID, ";
 foreach($SourceArray as $key => $value)
@@ -124,7 +126,26 @@ $sql .= "
 FROM invTypeMaterials
 WHERE typeID $inq
 GROUP BY typeID";
+
 $mraw = $DB->select_and_fetch($sql, "typeID");
+
+
+$s ="
+SELECT productTypeID, BlueprintTypeID, r.requiredTypeID, r.quantity, r.requiredTypeID, CONCAT( productTypeID, requiredTypeID ) AS UID
+FROM invBlueprintTypes AS b
+    INNER JOIN ramTypeRequirements AS r ON r.typeID = b.blueprintTypeID
+WHERE b.productTypeID $inq";
+$mextra = $DB->select_and_fetch($s, "UID");    
+
+if (count($mextra>0)){
+    foreach($mextra as $k => $im ){
+	$sk = $im['requiredTypeID'];
+	$sn = $SourceName[$sk];
+	$mraw[$im['productTypeID']][$sn] = $mraw[$im['productTypeID']][$sn]+ $im['quantity'];
+    }
+}
+
+
 
 
 // Fill Table UnderHeader :)

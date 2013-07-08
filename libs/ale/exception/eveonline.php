@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: eveonline.php 204 2009-04-25 22:14:22Z kovalikp $
+ * @version $Id: eveonline.php 212 2009-10-17 22:29:38Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -22,6 +22,16 @@ defined('ALE_BASE') or die('Restricted access');
 
 
 class AleExceptionEVE extends RuntimeException {
+	private $_cachedUntil;
+	
+	function __construct($message, $code, $cachedUntil) {
+		parent::__construct($message, $code);
+		$this->_cachedUntil = $cachedUntil;
+	}
+	
+	function getCachedUntil() {
+		return $this->_cachedUntil;
+	}
 	
 }
 

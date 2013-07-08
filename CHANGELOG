@@ -1,3 +1,11 @@
+09-Jul-2013
+*Fixed bug in T1 items with extra materials pure cost calculation
+*Fixed bug in T2 subcomponent PC calculation with extra meterials
++Ready for Odyssey DB
+
+24-Aug-2012
++Aded matherial list for selected t2 manufacturing
+
 10-Jul-2011
 +Added custom ME for t1/t2 manufacturing
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: adodb.php 210 2009-07-23 18:16:20Z kovalikp $
+ * @version $Id: adodb.php 213 2009-12-15 21:27:13Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -48,10 +48,15 @@ class AleCacheADOdb extends AleCacheAbstractDB {
 				throw new AleExceptionCache('ADODb connection failed');
 			}
 		}
+		$this->nameQuote = $this->db->nameQuote; 
 	}
 	
 	protected function escape($string) {
 		return $this->db->escape($string);
+	}
+	
+	protected function quote($value) {
+		return $this->db->quote($value);
 	}
 	
 	protected function &execute($query) {

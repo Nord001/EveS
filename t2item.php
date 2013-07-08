@@ -3,6 +3,7 @@
 $def_t2_me = -4; 
 $def_t22_me = 0;
 
+
 // show matherial for selected item
 function StepID(){
 parse_str($_SERVER['QUERY_STRING'], $url);
@@ -125,7 +126,7 @@ foreach($xml->marketstat[0]->{type} as $mat){
 $table = "
 <table id='mt_$iid'>
 <tr><td colspan='7' id='n' style='display:none'>$itemnum</td></tr>
-<tr><th width=300px>Material</th><th>Q.Ideal</th><th>Q.Real</th><th>Buy</th><th>Make</th><th>Price</th><th>Sum</th></tr>\n";
+<tr><th></th><th width=300px>Material</th><th>Q.Ideal</th><th>Q.Real</th><th>Buy</th><th>Make</th><th>Price</th><th>Sum</th></tr>\n";
 // Extra
 $grayed = (StepID() == 1) ? "" : "disabled";
 foreach ($mextra  as $mid => $v){
@@ -147,7 +148,7 @@ foreach ($mextra  as $mid => $v){
     }
     $price = numfmt($mprices[$mid], 2);
     $sum = numfmt($mprices[$mid]*$merequired);
-    $table.="<tr><td>$mename</td><td id='q'>$merequired</td><td>$merequired</td>$opts<td align='right' id='p'>$price</td><td align='right' id='s'>$sum</td></tr>\n";
+    $table.="<tr><td id='mid' style='visibility:hidden'>$mid</td><td>$mename</td><td id='q'>$merequired</td><td id='rr'>$merequired</td>$opts<td align='right' id='p'>$price</td><td align='right' id='s'>$sum</td></tr>\n";
 }
 // RAW
 foreach ($mraw  as $mid => $v){
@@ -170,7 +171,7 @@ foreach ($mraw  as $mid => $v){
 
 	$price = numfmt($mprices[$mid], 2);
 	$sum = numfmt($mprices[$mid]*$mrquantity);
-	$table.="<tr><td>$mrname</td><td id='q'>$mrquantity</td><td id='r'>-</td>$opts<td align='right' id='p'>$price</td><td align='right' id='s'>$sum</td></tr>\n";
+	$table.="<tr><td id='mid' style='visibility:hidden'>$mid</td><td>$mrname</td><td id='q'>$mrquantity</td><td id='r'>-</td>$opts<td align='right' id='p'>$price</td><td align='right' id='s'>$sum</td></tr>\n";
     } // mrquantity >0
 }
 // add total row
@@ -227,20 +228,20 @@ $start_form ="";
 $end_form   = "";
 $adjuster="";
 
-
 if (StepID() == 1){
+
     if ($portion > 1 ){$addtext = "x$portion";} else {$addtext = "";};
     $start_form = "<b>Materials for $iname $addtext</b><br>\n
-    $root_name BPO ME:&nbsp;<input id='t2mein' type='text' name='RootME' value='$def_t2_me' size='5'>
+    BPO ME:&nbsp;<input id='t2mein' type='text' name='RootME' value='$def_t2_me' size='5'>
     <BUTTON	NAME='adjr_' onClick=\"AdjustME_t2('mt_$iid', 't2mein', 't2meout')\">Adjust</BUTTON>
-    <form acrion='t2item.php'>
+    <form>
     <input type='hidden' name='step' value='2'>
     <input type='hidden' name='iid' value='$iid'>
     <input type='hidden' id='t2meout' name='iid_me' value='$def_t2_me'>";
     $end_form = "<br><input type='submit' value='Step 2'></form>";
 } else{
     $start_form ="<b>Materials for $iname</b><br>\n
-    $root_name BPO ME: $iid_me
+    BPO ME: $iid_me
     <input id='t2mein' type='hidden' name='RootME' value='$iid_me' size='5'>
     ";
 }
@@ -270,7 +271,7 @@ $mt_jtables .= "0);\n"; // close Jscript array
 $mt_jnum_tables = 1+count($build_items);
 $jglobalvars="var portion=$portion;\nvar num_tables=$mt_jnum_tables;\n$mt_jtables ";
 
-$smarty->assign("root_name", $step['iname']);
+//$smarty->assign("root_name", $step['iname']);
 $smarty->assign("root_id", $iid);
 
 $smarty->assign("user", $user);
@@ -279,4 +280,5 @@ $smarty->assign("adjuster", $adjuster);
 $smarty->assign("root_waste",$step['iwaste']); //bug!
 $smarty->assign("jglobalvars",$jglobalvars); 
 $smarty->assign("root_portion", $portion);
+$smarty->assign("root_name", $step['iname']);
 $smarty->display('t2item.tpl');

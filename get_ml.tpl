@@ -36,7 +36,7 @@ Number of items: <input id='nroot' type='text' name='RootN' value='1' size='5'>
 <BUTTON		NAME='adjr_' onClick="AdjustN()">Adjust</BUTTON>
 {$mtbl}
 <br>
-<i>For symply copying table to Excel use "Paste special..." -> Unicode</i>
+<i>For simple copying table to Excel use "Paste special..." -> Unicode</i>
 {include file='footer.tpl'}
 
 <script language='javascript'>

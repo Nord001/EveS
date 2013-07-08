@@ -26,7 +26,7 @@ $DB = new mydb;
 $DB->connect();
 // Load all matherials
 $moon_raw = $DB->select_and_fetch("SELECT * FROM invTypes WHERE groupID='427'", "typeID");
-$moon_intermid = $DB->select_and_fetch("SELECT * FROM invTypes WHERE groupID='428'", "typeID");
+$moon_intermid = $DB->select_and_fetch("SELECT * FROM invTypes WHERE groupID='428' AND typeID<>'20431'", "typeID");
 $moon_complex = $DB->select_and_fetch("SELECT * FROM invTypes WHERE groupID='429'", "typeID");
 
 // Prepare index arrays for queries
@@ -49,7 +49,11 @@ foreach($moon_complex as $complex){
 //=== TODO: move this to function ==========
 // try get prices for raw
 $params = array('typeid'=>$raw_ids, 'regionlimit' => "10000002");
-$xml = $ale->marketstat($params);
+try {
+    $xml = $ale->marketstat($params);
+} catch (Exception $e) {
+    echo 'Cannot load raw prices: ',  $e->getMessage(), "\n";
+}
 
 $raw_prices = array();
 foreach($xml->marketstat[0]->{type} as $mat){
@@ -58,9 +62,17 @@ foreach($xml->marketstat[0]->{type} as $mat){
     $raw_prices += array( $mat_id => $mat_minprice);
 }
 
+
+
 // try get prices for intermid
 $params = array('typeid'=>$intermid_ids, 'regionlimit' => "10000002");
-$xml = $ale->marketstat($params);
+try{
+    $xml = $ale->marketstat($params);
+} catch (Exception $e) {
+    echo 'Cannot load intermid prices: ',  $e->getMessage(), "<br>\n";
+}
+
+
 
 $intermid_prices = array();
 foreach($xml->marketstat[0]->{type} as $mat){
@@ -71,7 +83,11 @@ foreach($xml->marketstat[0]->{type} as $mat){
 
 // try get prices for complex
 $params = array('typeid'=>$complex_ids, 'regionlimit' => "10000002");
-$xml = $ale->marketstat($params);
+try{
+    $xml = $ale->marketstat($params);
+} catch (Exception $e) {
+    echo 'Cannot load complex prices: ',  $e->getMessage(), "\n";
+}
 
 $complex_prices = array();
 foreach($xml->marketstat[0]->{type} as $mat){

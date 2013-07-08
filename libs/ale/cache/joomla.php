@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: joomla.php 210 2009-07-23 18:16:20Z kovalikp $
+ * @version $Id: joomla.php 214 2010-02-24 00:40:47Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -27,7 +27,7 @@ class AleCacheJoomla extends AleCacheAbstractDB {
 	
 	public function __construct(array $config = array()) {
 		parent::__construct($config);
-		if (isset($config['db']) && is_resource($config['db'])) {
+		if (isset($config['db']) && is_object($config['db'])) {
 			$this->db = $config['db'];
 		} else {
 			$this->db = JFactory::getDBO();
@@ -38,10 +38,18 @@ class AleCacheJoomla extends AleCacheAbstractDB {
 		return $this->db->getEscaped($string);
 	}
 	
+	protected function quote($value) {
+		return $this->db->quote($value);
+	}
+	
+	protected function quoteName($name) {
+		return $this->db->nameQuote($name);
+	}
+	
 	protected function &execute($query) {
 		$result = $this->db->Execute($query);
 		if ($result === false) {
-			throw new AleExceptionCache($this->db->getErrorMsg(), $this->db-getErrorNum());
+			throw new AleExceptionCache($this->db->getErrorMsg(), $this->db->getErrorNum());
 		}
 		return $result;
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: mysql.php 210 2009-07-23 18:16:20Z kovalikp $
+ * @version $Id: mysql.php 213 2009-12-15 21:27:13Z kovalikp $
  * @license GNU/LGPL, see COPYING and COPYING.LESSER
  * This file is part of Ale - PHP API Library for EVE.
  * 
@@ -24,6 +24,7 @@ require_once ALE_BASE.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'abstractd
 
 
 class AleCacheMySQL extends AleCacheAbstractDB {
+	protected $nameQuote = '`';
 	
 	public function __construct(array $config = array()) {
 		parent::__construct($config);

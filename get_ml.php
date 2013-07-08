@@ -32,7 +32,7 @@ $rq = $DB->select_and_fetch("SELECT * FROM invTypes WHERE typeID IN( $sql_in -1)
 $mtbl = "<table id='mtbl'> <tr><th></th><th>Name</th><th>Number</th></tr>";
 foreach ($mlist as $mid => $num){
     $mname = $rq[$mid]['typeName'];
-    $mtbl .= "<tr><td style='visibility:hidden'>$mid</td><td>$mname</td><td id='n' align='right'>$num</td></tr>";
+    $mtbl .= "<tr><td style='visibility:hidden'>$mid</td><td><a href='javascript:CCPEVE.showMarketDetails($mid)'>$mname</a></td><td id='n' align='right'>$num</td></tr>";
 }
 $mtbl .= "</table>";
 
